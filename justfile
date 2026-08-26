@@ -102,7 +102,6 @@ image-prebuild-publish:
 image-publish: && image-digest
   earth \
     --push --ci -P +build-images-all \
-    --SIGN="true" \
     --RELEASE="true"
 
 image-sign-publish: && image-digest
