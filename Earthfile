@@ -3,7 +3,10 @@ VERSION 0.8
 IMPORT github.com/blue-build/earthly-lib/rust AS rust
 
 FROM alpine
-ARG --global IMAGE=ghcr.io/blue-build/cli
+ARG --global SUFFIX_LIST="- distrobox installer"
+ARG --global EARTH_GIT_PROJECT_NAME
+ARG --global FEDORA_VERSION="44"
+ARG --global IMAGE="ghcr.io/${EARTH_GIT_PROJECT_NAME}"
 ARG --global TAGGED="false"
 ARG --global LATEST="false"
 
@@ -24,13 +27,12 @@ build-images-all:
     END
 
     ARG EARTH_PUSH
-    IF [ "$EARTH_PUSH" = "true" ]
-        BUILD --pass-args +sign-all
+    ARG SIGN
+    IF [ "$EARTH_PUSH" = "true" ] && [ "$SIGN" = "true" ]
+        BUILD --pass-args +sign-images
     END
 
-sign-all:
-    ARG SUFFIX_LIST="- distrobox installer"
-    BUILD --pass-args +sign-images
+local-digest-list:
     COPY --pass-args +digest-list/digest-list /
     SAVE ARTIFACT /digest-list AS LOCAL ./digest-list
 
@@ -136,7 +138,7 @@ common:
     DO rust+INIT --keep_fingerprints=true
 
 blue-build-cli-prebuild:
-    ARG BASE_IMAGE="registry.fedoraproject.org/fedora-toolbox:42"
+    ARG BASE_IMAGE="registry.fedoraproject.org/fedora-toolbox:${FEDORA_VERSION}"
     FROM "$BASE_IMAGE"
 
     RUN dnf5 -y update \
@@ -194,7 +196,7 @@ blue-build-cli-prebuild:
 
 blue-build-cli:
     FROM alpine
-    ARG RELEASE="true"
+    ARG RELEASE
     ARG TARGETARCH
 
     IF [ "$RELEASE" = "true" ]
@@ -241,8 +243,15 @@ blue-build-cli-distrobox-prebuild:
 
 blue-build-cli-distrobox:
     ARG EARTH_GIT_HASH
+    ARG RELEASE
     ARG TARGETARCH
-    FROM "$IMAGE:$EARTH_GIT_HASH-distrobox-prebuild-$TARGETARCH"
+
+    IF [ "$RELEASE" = "true" ]
+        ARG EARTH_GIT_HASH
+        FROM "$IMAGE:$EARTH_GIT_HASH-distrobox-prebuild-$TARGETARCH"
+    ELSE
+        FROM +blue-build-cli-distrobox-prebuild
+    END
 
     DO +INSTALL --OUT_DIR="/usr/bin/" --BUILD_TARGET="$(uname -m)-unknown-linux-musl"
 
@@ -263,12 +272,18 @@ installer:
         DO +INSTALL --OUT_DIR="/out/" --BUILD_TARGET="x86_64-unknown-linux-musl"
     END
 
-    COPY install.sh /install.sh
+    COPY +modify-installer/install.sh /install.sh
 
     CMD ["cat", "/install.sh"]
 
     DO --pass-args +SAVE_IMAGE --SUFFIX="-installer"
     SAVE ARTIFACT /out/bluebuild
+
+modify-installer:
+    FROM --platform native alpine
+    COPY install.sh /install.sh
+    RUN sed -i "s|^PROJECT=\"blue-build/cli\"|PROJECT=\"${EARTH_GIT_PROJECT_NAME}\"|" /install.sh
+    SAVE ARTIFACT /install.sh
 
 cosign:
     FROM ghcr.io/sigstore/cosign/cosign:v3.1.3
@@ -407,8 +422,8 @@ LABELS:
     FUNCTION
     LET build_time="$(date -Iseconds)"
     LABEL org.opencontainers.image.created="$build_time"
-    LABEL org.opencontainers.image.url="https://github.com/blue-build/cli"
-    LABEL org.opencontainers.image.source="https://github.com/blue-build/cli"
+    LABEL org.opencontainers.image.url="https://github.com/${EARTH_GIT_PROJECT_NAME}"
+    LABEL org.opencontainers.image.source="https://github.com/${EARTH_GIT_PROJECT_NAME}"
     LABEL org.opencontainers.image.version="$VERSION"
     LABEL version="$VERSION"
     LABEL org.opencontainers.image.vendor="BlueBuild"
@@ -416,9 +431,9 @@ LABELS:
     LABEL org.opencontainers.image.licenses="Apache-2.0"
     LABEL license="Apache-2.0"
     LABEL org.opencontainers.image.title="BlueBuild CLI tool"
-    LABEL name="blue-build/cli"
+    LABEL name="${EARTH_GIT_PROJECT_NAME}"
     LABEL org.opencontainers.image.description="A CLI tool built for creating Containerfile templates for ostree based atomic distros"
-    LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/blue-build/cli/main/README.md"
+    LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/${EARTH_GIT_PROJECT_NAME}/main/README.md"
 
     IF [ "$TAGGED" = "true" ]
         ARG EARTH_GIT_BRANCH

@@ -88,6 +88,34 @@ watch-lint:
 watch-lint-all-features:
   cargo watch -c -x 'clippy --all-features'
 
+# Build the images and store locally
+image-build:
+  earth --output --ci -P +build-images-all
+
+image-prebuild:
+  earth --ci +prebuild
+
+image-prebuild-publish:
+  earth --ci --push +prebuild
+
+image-pulish: && image-digest
+  earth \
+    --push --ci -P +build-images-all \
+    --SIGN="true" \
+    --RELEASE="true"
+
+image-sign-publish: && image-digest
+  earth \
+    --secret COSIGN_PRIVATE_KEY \
+    --secret GH_ACTOR \
+    --secret GH_TOKEN \
+    --push --ci -P +build-images-all \
+    --SIGN="true" \
+    --RELEASE="true"
+
+image-digest:
+  earth +local-digest-list
+
 # Expand the macros of a module for debugging
 expand *args:
   cargo expand $@ > ./expand.rs
