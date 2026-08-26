@@ -87,7 +87,7 @@ EACH_FEAT:
 install:
     FROM +common
     ARG --required BUILD_TARGET
-    ARG --required RELEASE
+    ARG RELEASE
 
     IF [ "$RELEASE" = "true" ]
         DO rust+CROSS --target="$BUILD_TARGET" --output="$BUILD_TARGET/release/[^\./]+"
@@ -100,7 +100,7 @@ install:
 install-all-features:
     FROM +common
     ARG --required BUILD_TARGET
-    ARG --required RELEASE
+    ARG RELEASE
 
     IF [ "$RELEASE" = "true" ]
         DO rust+CROSS --args="build --all-features --release" --target="$BUILD_TARGET" --output="$BUILD_TARGET/release/[^\./]+"
