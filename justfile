@@ -5,6 +5,7 @@ export BB_SKIP_VALIDATION := "true"
 
 set dotenv-load := true
 set positional-arguments := true
+set lazy
 
 # default recipe to display help information
 default:
@@ -152,14 +153,18 @@ release *args:
   gh release create --generate-notes --latest "v${VERSION}"
 
 should_push := if env('GITHUB_ACTIONS', '') != '' {
-  if env('COSIGN_PRIVATE_KEY', '') != '' {
-    '--push'
-  } else {
-    ''
-  }
+  '--push'
 } else {
   ''
 }
+
+should_not_sign := if env('COSIGN_PRIVATE_KEY', '') == '' {
+  '--no-sign'
+} else {
+  ''
+}
+
+project_path := `git remote get-url origin | sed -E 's|^[^:/]+://[^/]*/||; s|^.*:||; s/\.git$//'`
 
 cargo_bin := if env('CARGO_HOME', '') != '' {
   x"${CARGO_HOME:-}/bin"
@@ -182,6 +187,7 @@ test-docker-build: generate-test-secret install-debug-all-features
     -B docker \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe.yml recipes/recipe-gts.yml
 
@@ -191,6 +197,7 @@ test-recipe-v2-build: generate-test-secret install-debug-all-features
     --retry-push \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-v2.yml
 
@@ -201,6 +208,7 @@ test-empty-files-build: generate-test-secret install-debug-all-features
     -B docker \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv
 
 test-env-expansion-build: generate-test-secret install-debug-all-features
@@ -212,6 +220,7 @@ test-env-expansion-build: generate-test-secret install-debug-all-features
     -B docker \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-env-expansion.yml
 
@@ -222,6 +231,7 @@ test-bluefin-build: generate-test-secret install-debug-all-features
     -B docker \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-bluefin.yml
 
@@ -229,6 +239,7 @@ test-chunkah-build: generate-test-secret install-debug-all-features
   cd integration-tests/test-repo \
   && bluebuild build \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     --chunkah \
     recipes/recipe-chunkah.yml
@@ -237,6 +248,7 @@ test-build-chunked-oci-build: generate-test-secret install-debug-all-features
   cd integration-tests/test-repo \
   && bluebuild build \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     --build-chunked-oci \
     recipes/recipe-build-chunked-oci.yml
@@ -245,6 +257,7 @@ test-rechunk-build: generate-test-secret install-debug-all-features
   cd integration-tests/test-repo \
   && bluebuild build \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     --rechunk \
     recipes/recipe-rechunk.yml
@@ -253,6 +266,7 @@ test-fresh-rechunk-build: generate-test-secret install-debug-all-features
   cd integration-tests/test-repo \
   && bluebuild build \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     --rechunk \
     --rechunk-clear-plan \
@@ -265,6 +279,7 @@ test-arm64-build: generate-test-secret install-debug-all-features
     --retry-push \
     --platform linux/arm64 \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-arm64.yml
 
@@ -275,6 +290,7 @@ test-docker-build-external-login: generate-test-secret install-debug-all-feature
     --retry-push \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-docker-external.yml
 
@@ -286,6 +302,7 @@ test-podman-build: generate-test-secret install-debug-all-features
     -B podman \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-podman.yml
 
@@ -297,6 +314,7 @@ test-buildah-build: generate-test-secret install-debug-all-features
     -B buildah \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-buildah.yml
 
@@ -310,6 +328,7 @@ test-multiplatform-docker: generate-test-secret install-debug-all-features
     -B docker \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-docker.yml
 
@@ -320,6 +339,7 @@ test-multiplatform-podman: generate-test-secret install-debug-all-features
     -B podman \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-podman.yml
 
@@ -330,6 +350,7 @@ test-multiplatform-buildah: generate-test-secret install-debug-all-features
     -B buildah \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-buildah.yml
 
@@ -341,6 +362,7 @@ test-multiplatform-chunkah: generate-test-secret install-debug-all-features
     --remove-base-image \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-chunkah.yml
 
@@ -352,6 +374,7 @@ test-multiplatform-build-chunked-oci: generate-test-secret install-debug-all-fea
     --remove-base-image \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-build-chunked-oci.yml
 
@@ -362,6 +385,7 @@ test-multiplatform-rechunk: generate-test-secret install-debug-all-features
     --rechunk \
     -S sigstore \
     {{ should_push }} \
+    {{ should_not_sign }} \
     -vv \
     recipes/recipe-multiplatform-rechunk.yml
 
@@ -370,14 +394,14 @@ test-generate-iso-image: generate-test-secret install-debug-all-features
   #!/usr/bin/env bash
   set -eu
   ISO_OUT=$(mktemp -d)
-  bluebuild generate-iso -vv --output-dir "$ISO_OUT" image ghcr.io/blue-build/cli/test:latest
+  bluebuild generate-iso -vv --output-dir "$ISO_OUT" image ghcr.io/{{ project_path }}/test:latest
 
 # Run ISO generator for images using web-ui
 test-generate-iso-web-ui: generate-test-secret install-debug-all-features
   #!/usr/bin/env bash
   set -eu
   ISO_OUT=$(mktemp -d)
-  bluebuild generate-iso -vv --output-dir "$ISO_OUT" --web-ui image ghcr.io/blue-build/cli/test:latest
+  bluebuild generate-iso -vv --output-dir "$ISO_OUT" --web-ui image ghcr.io/{{ project_path }}/test:latest
 
 # Run ISO generator for images
 test-generate-iso-recipe: generate-test-secret install-debug-all-features
@@ -389,7 +413,7 @@ test-generate-iso-recipe: generate-test-secret install-debug-all-features
 
 # Build a local cli image
 build-local-cli-image:
-  earth --ci --output -P +blue-build-cli --RELEASE='false'
+  earth --ci --output -P +blue-build-cli
 
 git_sha := `git rev-parse HEAD`
 tty_arg := `[ -t 0 ] && echo "t" || echo ""`
@@ -399,7 +423,7 @@ exec-cli-container +args: build-local-cli-image
   docker run -i{{ tty_arg }} --privileged --rm \
     -v ./integration-tests/test-repo:/bluebuild \
     -e TEST_SECRET="$TEST_SECRET" \
-    ghcr.io/blue-build/cli:{{ git_sha }} \
+    ghcr.io/{{ project_path }}:{{ git_sha }} \
     {{ args }}
 
 # Run a cli container using the podman build driver
