@@ -98,7 +98,7 @@ image-prebuild:
 image-prebuild-publish:
   earth --ci --push +prebuild
 
-image-pulish: && image-digest
+image-publish: && image-digest
   earth \
     --push --ci -P +build-images-all \
     --SIGN="true" \
