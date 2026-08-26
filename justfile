@@ -172,6 +172,8 @@ cargo_bin := if env('CARGO_HOME', '') != '' {
   x"$HOME/.cargo/bin/bluebuild"
 }
 
+export BB_TEST_IMAGE_NAME := file_stem(project_path)
+
 generate-test-secret:
   mkdir -p integration-tests/test-repo/secrets
   echo "321tset" > integration-tests/test-repo/secrets/test-secret
