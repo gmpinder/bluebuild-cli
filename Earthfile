@@ -5,6 +5,8 @@ IMPORT github.com/blue-build/earthly-lib/rust AS rust
 FROM alpine
 ARG --global SUFFIX_LIST="- distrobox installer"
 ARG --global EARTH_GIT_PROJECT_NAME
+ARG --global EARTH_GIT_HASH
+ARG --global EARTH_GIT_BRANCH
 ARG --global FEDORA_VERSION="44"
 ARG --global IMAGE="ghcr.io/${EARTH_GIT_PROJECT_NAME}"
 ARG --global TAGGED="false"
@@ -190,7 +192,6 @@ blue-build-cli-prebuild:
 
     ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-    ARG EARTH_GIT_HASH
     ARG TARGETARCH
     SAVE IMAGE --push "$IMAGE:$EARTH_GIT_HASH-prebuild-$TARGETARCH"
 
@@ -200,7 +201,6 @@ blue-build-cli:
     ARG TARGETARCH
 
     IF [ "$RELEASE" = "true" ]
-        ARG EARTH_GIT_HASH
         FROM "$IMAGE:$EARTH_GIT_HASH-prebuild-$TARGETARCH"
     ELSE
         FROM +blue-build-cli-prebuild
@@ -237,17 +237,14 @@ blue-build-cli-distrobox-prebuild:
 
     COPY +cosign/cosign /usr/bin/cosign
 
-    ARG EARTH_GIT_HASH
     ARG TARGETARCH
     SAVE IMAGE --push "$IMAGE:$EARTH_GIT_HASH-distrobox-prebuild-$TARGETARCH"
 
 blue-build-cli-distrobox:
-    ARG EARTH_GIT_HASH
     ARG RELEASE
     ARG TARGETARCH
 
     IF [ "$RELEASE" = "true" ]
-        ARG EARTH_GIT_HASH
         FROM "$IMAGE:$EARTH_GIT_HASH-distrobox-prebuild-$TARGETARCH"
     ELSE
         FROM +blue-build-cli-distrobox-prebuild
@@ -320,8 +317,6 @@ digest-list:
     LET minor_version="$(echo "$version" | cut -d'.' -f2)"
 
     ARG --required SUFFIX_LIST
-    ARG EARTH_GIT_HASH
-    ARG EARTH_GIT_BRANCH
     LET suffix=""
 
     FOR s IN $SUFFIX_LIST
@@ -411,11 +406,9 @@ SAVE_IMAGE:
             SAVE IMAGE --push "${IMAGE}:v${major_version}${SUFFIX}"
         END
     ELSE
-        ARG EARTH_GIT_BRANCH
         ARG IMAGE_TAG="$(echo "${EARTH_GIT_BRANCH}" | sed 's|/|_|g')"
         SAVE IMAGE --push "${IMAGE}:${IMAGE_TAG}${SUFFIX}"
     END
-    ARG EARTH_GIT_HASH
     SAVE IMAGE --push "${IMAGE}:${EARTH_GIT_HASH}${SUFFIX}"
 
 LABELS:
@@ -436,7 +429,6 @@ LABELS:
     LABEL org.opencontainers.image.documentation="https://raw.githubusercontent.com/${EARTH_GIT_PROJECT_NAME}/main/README.md"
 
     IF [ "$TAGGED" = "true" ]
-        ARG EARTH_GIT_BRANCH
         LABEL org.opencontainers.image.ref.name="$EARTH_GIT_BRANCH"
     ELSE
         LABEL org.opencontainers.image.ref.name="v$VERSION"

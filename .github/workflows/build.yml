@@ -48,7 +48,7 @@ jobs:
       - name: Run build
         id: build
         run: |
-          earth --ci --push -P +prebuild
+          just image-prebuild-publish
 
   amd64-prebuild:
     timeout-minutes: 20
@@ -81,7 +81,7 @@ jobs:
       - name: Run build
         id: build
         run: |
-          earth --ci --push -P +prebuild
+          just image-prebuild-publish
 
   build-images:
     permissions:
