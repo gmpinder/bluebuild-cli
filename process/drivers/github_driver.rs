@@ -136,8 +136,8 @@ impl CiDriver for GithubDriver {
     fn get_registry() -> miette::Result<String> {
         let event = Event::read_from_env()?;
 
-        let owner = if let Some(head) = event.head {
-            head.repo.owner.login
+        let owner = if let Some(pr) = event.pull_request {
+            pr.head.repo.owner.login
         } else {
             event.repository.owner.login
         };

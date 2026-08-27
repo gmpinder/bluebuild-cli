@@ -17,6 +17,8 @@ pub(super) struct Event {
     // pub base: Option<EventRefInfo>,
     pub head: Option<EventRefInfo>,
 
+    pub pull_request: Option<EventPullRequest>,
+
     #[serde(alias = "ref")]
     pub commit_ref: Option<String>,
 }
@@ -72,6 +74,11 @@ pub(super) struct EventRepository {
 #[derive(Debug, Deserialize, Clone)]
 pub(super) struct EventRepositoryOwner {
     pub login: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub(super) struct EventPullRequest {
+    pub head: EventRefInfo,
 }
 
 #[derive(Debug, Deserialize, Clone)]
