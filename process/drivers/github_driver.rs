@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use blue_build_utils::{
     constants::{
-        GITHUB_EVENT_NAME, GITHUB_EVENT_PATH, GITHUB_REF_NAME, GITHUB_SHA, GITHUB_TOKEN_ISSUER_URL,
+        GITHUB_EVENT_NAME, GITHUB_REF_NAME, GITHUB_SHA, GITHUB_TOKEN_ISSUER_URL,
         GITHUB_WORKFLOW_REF, PR_EVENT_NUMBER,
     },
     container::Tag,
@@ -26,8 +26,7 @@ pub struct GithubDriver;
 
 impl CiDriver for GithubDriver {
     fn on_default_branch() -> bool {
-        get_env_var(GITHUB_EVENT_PATH)
-            .is_ok_and(|path| Event::try_new(path).is_ok_and(|e| e.on_default_branch()))
+        Event::read_from_env().is_ok_and(|e| e.on_default_branch())
     }
 
     fn keyless_cert_identity() -> Result<String> {
@@ -122,21 +121,15 @@ impl CiDriver for GithubDriver {
     }
 
     fn get_repo_url() -> miette::Result<String> {
-        Ok(Event::try_new(get_env_var(GITHUB_EVENT_PATH)?)?
-            .repository
-            .html_url)
+        Ok(Event::read_from_env()?.repository.html_url)
     }
 
     fn get_registry() -> miette::Result<String> {
-        Ok(format!(
-            "ghcr.io/{}",
-            Event::try_new(get_env_var(GITHUB_EVENT_PATH)?)?
-                .repository
-                .owner
-                .login
+        Ok(
+            format!("ghcr.io/{}", Event::read_from_env()?.repository.owner.login)
+                .trim()
+                .to_lowercase(),
         )
-        .trim()
-        .to_lowercase())
     }
 
     fn default_ci_file_path() -> PathBuf {
