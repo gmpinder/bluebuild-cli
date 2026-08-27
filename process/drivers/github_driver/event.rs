@@ -37,6 +37,7 @@ impl Event {
                 .into_diagnostic()
                 .inspect(|event| trace!("{event}"))
                 .and_then(|event| serde_json::from_str(&event).into_diagnostic())
+                .inspect(|event| trace!("{event:#?}"))
         }
         get_env_var(GITHUB_EVENT_PATH)
             .map(PathBuf::from)
@@ -77,6 +78,7 @@ pub(super) struct EventRepositoryOwner {
 pub(super) struct EventRefInfo {
     #[serde(alias = "ref")]
     pub commit_ref: String,
+    pub repo: EventRepository,
 }
 
 #[cfg(test)]
