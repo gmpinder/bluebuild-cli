@@ -91,7 +91,7 @@ watch-lint-all-features:
 
 # Build the images and store locally
 image-build:
-  earth --output --ci -P +build-images-all
+  earth --output --platform native --ci -P +build-images-all
 
 image-prebuild:
   earth --ci +prebuild

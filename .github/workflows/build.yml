@@ -7,6 +7,9 @@ on:
       repo:
         required: true
         type: string
+      fork_pr:
+        default: false
+        type: boolean
     secrets:
       SIGNING_SECRET:
         required: true
@@ -27,15 +30,15 @@ jobs:
 
     steps:
       - uses: EarthBuild/actions-setup@f4d20223e70dbb43b5fc08c4d857ab9cf0dbf3ae # v2.2.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           use-cache: false
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -44,7 +47,7 @@ jobs:
 
 
       - name: Login to GitHub Container Registry
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
@@ -52,7 +55,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Run build
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         id: build
         run: |
           just image-prebuild-publish
@@ -65,16 +68,16 @@ jobs:
 
     steps:
       - uses: EarthBuild/actions-setup@f4d20223e70dbb43b5fc08c4d857ab9cf0dbf3ae # v2.2.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           use-cache: false
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
 
       # Setup repo and add caching
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -84,7 +87,7 @@ jobs:
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -93,7 +96,7 @@ jobs:
 
       - name: Run build
         id: build
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         run: |
           just image-prebuild-publish
 
@@ -134,15 +137,14 @@ jobs:
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-
       - name: Run build
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         env:
           GH_ACTOR: ${{ github.actor }}
           GH_TOKEN: ${{ github.token }}
@@ -155,12 +157,12 @@ jobs:
           fi
 
       - name: Run build
-        if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        if: ${{ inputs.fork_pr }}
         run: |
           just image-build
 
       - name: Store image digest info
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ ! inputs.fork_pr }}
         id: image_manifest_metadata
         run: |
           digest_list_json=$(jq -Rc '[ inputs | split(",") | {"image_ref":.[0],"image_digest":.[1]} ]' ./digest-list)
