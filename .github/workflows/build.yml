@@ -22,18 +22,20 @@ jobs:
   arm64-prebuild:
     timeout-minutes: 20
     runs-on: ubuntu-24.04-arm
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     permissions:
       packages: write # write pacakges to ghcr
 
     steps:
       - uses: EarthBuild/actions-setup@f4d20223e70dbb43b5fc08c4d857ab9cf0dbf3ae # v2.2.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           use-cache: false
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -42,6 +44,7 @@ jobs:
 
 
       - name: Login to GitHub Container Registry
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
@@ -49,6 +52,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Run build
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         id: build
         run: |
           just image-prebuild-publish
@@ -56,19 +60,21 @@ jobs:
   amd64-prebuild:
     timeout-minutes: 20
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     permissions:
       packages: write # write pacakges to ghcr
 
     steps:
       - uses: EarthBuild/actions-setup@f4d20223e70dbb43b5fc08c4d857ab9cf0dbf3ae # v2.2.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           use-cache: false
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
 
       # Setup repo and add caching
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -78,6 +84,7 @@ jobs:
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -86,6 +93,7 @@ jobs:
 
       - name: Run build
         id: build
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
           just image-prebuild-publish
 
