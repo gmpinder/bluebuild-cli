@@ -88,7 +88,7 @@ jobs:
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
 
-      - name: Run Build
+      - name: Run ${{ inputs.run }}
         if: ${{ ! inputs.fork_pr }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -97,11 +97,11 @@ jobs:
           RUN_JUST_RECIPE: ${{ inputs.just_recipe }}
         run: just "${RUN_JUST_RECIPE}"
 
-      - name: Run Build Fork PR
+      - name: Run ${{ inputs.run }} Fork PR
         if: ${{ inputs.fork_pr }}
         env:
           GH_PR_EVENT_NUMBER: ${{ inputs.pr_event_number }}
-          RUN_JUST_RECIPE: ${{ inputs.just_recipe }}
+          RUN_JUST_RECIPE: ${{ inputs.run }}
         run: |
           export CARGO_HOME=$HOME/.cargo
           just "${RUN_JUST_RECIPE}"
