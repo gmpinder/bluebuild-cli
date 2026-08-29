@@ -151,8 +151,12 @@ release *args:
   git push origin "v${VERSION}"
   gh release create --generate-notes --latest "v${VERSION}"
 
-should_push := if env('GITHUB_ACTIONS', '') != '' && env('GH_TOKEN', '') != '' {
-  '--push'
+should_push := if env('GITHUB_ACTIONS', '') != '' {
+  if env('GH_TOKEN', '') != '' {
+    '--push'
+  } else {
+    ''
+  }
 } else {
   ''
 }
