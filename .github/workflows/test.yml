@@ -101,7 +101,7 @@ jobs:
   docker-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -113,7 +113,7 @@ jobs:
   recipe-v2:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -124,7 +124,7 @@ jobs:
   empty-files-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -135,7 +135,7 @@ jobs:
   env-expand-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -146,7 +146,7 @@ jobs:
   bluefin-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -157,7 +157,7 @@ jobs:
   chunkah-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -168,7 +168,7 @@ jobs:
   build-chunked-oci-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -179,7 +179,7 @@ jobs:
   rechunk-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -190,7 +190,7 @@ jobs:
   arm64-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -201,7 +201,7 @@ jobs:
   docker-build-external-login:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -214,7 +214,7 @@ jobs:
   podman-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -225,7 +225,7 @@ jobs:
   buildah-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -236,7 +236,7 @@ jobs:
   multi-platform-docker:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -249,7 +249,7 @@ jobs:
   multi-platform-podman:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -261,7 +261,7 @@ jobs:
   multi-platform-buildah:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -273,7 +273,7 @@ jobs:
   multi-platform-chunkah:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -285,7 +285,7 @@ jobs:
   multi-platform-build-chunked-oci:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -297,7 +297,7 @@ jobs:
   multi-platform-rechunk:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -309,7 +309,7 @@ jobs:
   iso-from-image:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -320,7 +320,7 @@ jobs:
   iso-from-image-web-ui:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -331,7 +331,7 @@ jobs:
   iso-from-recipe:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -342,7 +342,7 @@ jobs:
   container-podman-build:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -354,7 +354,7 @@ jobs:
   container-podman-chunkah:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -366,7 +366,7 @@ jobs:
   container-podman-build-chunked-oci:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
@@ -378,7 +378,7 @@ jobs:
   container-podman-rechunk:
     uses: ./.github/workflows/run-test.yml
     secrets:
-      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+      TEST_SIGNING_SECRET: ${{ secrets.TEST_SIGNING_SECRET }}
     with:
       repo: ${{ inputs.repo }}
       ref: ${{ inputs.ref }}
