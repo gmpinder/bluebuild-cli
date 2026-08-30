@@ -95,7 +95,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_PR_EVENT_NUMBER: ${{ inputs.pr_event_number }}
           COSIGN_PRIVATE_KEY: ${{ secrets.TEST_SIGNING_SECRET }}
-          RUN_JUST_RECIPE: ${{ inputs.just_recipe }}
+          RUN_JUST_RECIPE: ${{ inputs.run }}
         run: just "${RUN_JUST_RECIPE}"
 
       - name: Run ${{ inputs.run }} Fork PR
